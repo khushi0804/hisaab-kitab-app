@@ -1,0 +1,165 @@
+1. write npm init -y 
+install express , ejs and other packages like nodemon
+2.make a folder named as views and file named as index.ejs , also make a public folder and other folder inside it like js, css, images
+
+3. now set the engine and the server for application
+
+4. now make files in views folder and also create a folder named as hisaab were we see all the hisaab kitab
+
+
+
+
+-------------------------------------
+
+first we will divide our module into small pieces of code to improve logics behind the scenes that will help us to create whole project.
+
+1.File Creation Overview
+
+create a file named folder that help us to read all the files inside it.
+file name should be name as date like 01-04-2025
+
+first create a route as create write a code to get date by chatgpt now use fs.writefile(`./files/${nameofyourfile}`,function(err) if else -> return res.send)
+
+
+
+app.get("/create", (req, res) => {
+  const today = new Date();
+  const day = String(today.getDate()).padStart(2, '0');
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const year = today.getFullYear();
+  const filename =`${day} - ${month} - ${year}.txt`;
+  // const filename = console.log(`${day} - ${month} - ${year}.txt`);
+  fs.writeFile(`./files/${filename}`, "daal chawal", function (err) {
+    if (err) return res.send("something is wrong");
+    else res.send("done")
+  })
+
+
+})
+
+
+-------------------------------------
+
+
+now moving towards -> STEP - 2
+
+File Reading Overview 
+we want to read our file or show our file on home page we will use readdir
+always remember the files data will be in an arrays format
+
+
+
+app.get("/", (req, res) => {
+  fs.readdir(`./files`, function (err, files) {
+    // console.log(files);
+    res.render("index", { files })
+  })
+})
+
+---> index.ejs
+
+  <% files.forEach((file)=>{ %>
+    <h3><%= file %></h3>
+    <% }) %>
+      <h1>hey</h1>
+
+
+
+
+---------------------------------------
+
+File Edit Overview -> focus 
+
+
+app.js
+
+const express = require('express');
+const app = express();
+const path = require('path');
+const fs = require('fs');
+
+app.set("view engine", "ejs");
+app.use(express.static(path.join(__dirname, "public")))
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+
+app.get("/", (req, res) => {
+  fs.readdir(`./files`, function (err, files) {
+    // console.log(files);
+    res.render("index", { files })
+  })
+})
+
+
+app.get("/edit/:filename", (req, res) => {
+  fs.readFile(`./files/${req.params.filename}`, "utf-8", function (err, data) {
+    if (err) return res.send(err);
+    res.render("edit", { data, filename: req.params.filename })
+  })
+
+})
+
+app.post("/update/:filename", (req, res) => {
+  fs.writeFile(`./files/${req.params.filename}`,
+    req.body.filedata, function (err) {
+    if (err) return res.send(err);
+    res.redirect("/") })
+  })
+
+
+
+
+
+app.listen(3000)
+
+=======-----=============
+
+edit.ejs ------>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+<form action="/update/<%= filename %>" method="post">
+  <textarea name="filedata" id=""><%= data %></textarea>
+ <input type="submit">
+</form>
+</body>
+</html>
+
+
+--------------------------------index.ejs
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <% files.forEach((file)=>{ %>
+    <h3>
+      <%= file %>
+    </h3>
+    <a href="/edit/<%= file %>">edit</a>
+    <% }) %>
+      <h1>hey</h1>
+</body>
+
+</html>
+
+
+
+
+ ----------------------------------------------------------- hisab kitaab applications ------------
+
+ 1. first we will create the app and install all the important packages and then we set up our engine after that we render index, edit, hisaab,create
