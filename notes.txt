@@ -163,3 +163,129 @@ edit.ejs ------>
  ----------------------------------------------------------- hisab kitaab applications ------------
 
  1. first we will create the app and install all the important packages and then we set up our engine after that we render index, edit, hisaab,create
+ then check all the pages add frontend and then check everypage by render
+
+
+ 2. create a folder named as hisaab where we see all the hisaabs 
+
+
+ 3. now, render the stuff 
+
+ 
+app.get("/", (req, res) => {
+  fs.readdir(`./hisaab`, function (err, files) {
+    if (err) return res.status(500).send(err)
+    res.render("index", { files: files })
+    // we can pass the data in index to we are passing the files with the name of files
+  })
+  // check every page by render ==> index,hisaab,edit,index
+
+})
+
+then put the message in index.ejs that if the hissab is given show them otherwise show nothing to show 
+
+now, go for index.ejs if the hisaabs are available then show them otherwise show a dummy hisaab also use foreach to make multiple files  and see those files
+
+      <div class="px-10 hisaabs">
+      <h3 class="capitalize text-2xl font-medium mb-5 mt-10 tracking-tight">All hisaab kitaab</h3>
+
+      <% if(files.length> 0 ) {%>
+        <% files.forEach((file)=>{ %>
+
+          <div class="hisaab w-fit items-center py-3 mb-3 px-5 gap-20 bg-blue-500 flex justify-between rounded-md">
+            <div class="flex gap-4 text-white items-center">
+              <h3 class="text-2xl">
+                <%= file %>
+              </h3>
+              <a href="/hisaab"><i
+                  class="w-6 h-6 text-blue-500 flex items-center justify-center bg-white rounded-full ri-arrow-right-line"></i></a>
+            </div>
+            <div class="flex gap-3 items-center">
+              <a href="/edit"><i class="text-white ri-pencil-line"></i></a>
+              <a href="/delete"><i
+                  class="w-6 h-6 text-red-500 flex items-center justify-center bg-white rounded-full ri-delete-bin-line"></i></a>
+            </div>
+          </div>
+          <% }) %>
+
+            <% } else { %>
+              <h3 class="text-zinc-500">(only show if) nothing to show, create hisaabs to see something.</h3>
+              <% } %>
+
+
+
+
+
+    </div>
+
+
+note -> create random files in hisaab to check the data 
+ -------------------------------------------------------------------------------------------
+
+NOW MOVING TOWARDS CREATE ROUTE 
+
+
+now create route for create hissab go in create.ejs name the input fields and give the method post to the form
+
+
+app.post("/createhisaab", (req, res) => {
+//  res.send(req.body) // to check the data and on the basis of this data we have to create a new file 
+ fs.writeFile(`./hisaab/${req.body.title}`)
+//  create the file in hisaab folder or 
+
+})
+app.listen(3000)
+
+
+
+the file name will be dependent on the input fields so, we say req.body.title as our input field name is title and we want data from the input fields so, we will write req.body.content as our field name is connected withe content
+
+
+app.post("/createhisaab", (req, res) => {
+//  res.send(req.body) // to check the data and on the basis of this data we have to create a new file 
+ fs.writeFile(`./hisaab/${req.body.title}`,req.body.content,function(err){
+  if(err) return res.status(500).send(err);
+ else{
+  res.redirect('/')
+ }
+ })
+//  create the file in hisaab folder or 
+
+})
+
+
+now we will learn to manage with date 
+
+app.post("/createhisaab", (req, res) => {
+
+  let currentDate = new Date();
+  let date = `${currentDate.getDate()}- ${currentDate.getMonth() + 1}-${currentDate.getFullYear()} `
+  //  res.send(req.body) // to check the data and on the basis of this data we have to create a new file 
+  fs.writeFile(`./hisaab/${date}.txt`, req.body.content, function (err) {
+    if (err) return res.status(500).send(err);
+    else {
+      res.redirect('/')
+    }
+  })
+  //  create the file in hisaab folder or 
+
+})
+app.listen(3000)
+
+
+--------------today edit page-------------
+
+
+go for edit.ejs and change the path of edit <%= file %>
+then create a route for edit page create a dynamic route for this send the filename filedata and all the needed stuff
+
+now update edit.ejs and then create route for update
+
+
+.//////now showing the file 
+
+first go for index.ejs to chnage the route make the route for hisaab then make changes on hisaab route then done 
+
+
+/////deleting
+go for index to change route 

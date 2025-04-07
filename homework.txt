@@ -1,0 +1,23 @@
+if the file name is similiar change the file name automatically by 4-4-2025(1)
+
+
+
+app.post("/createhisaab", (req, res) => {
+  let currentDate = new Date();
+  let baseName = `${currentDate.getDate()}-${currentDate.getMonth() + 1}-${currentDate.getFullYear()}`;
+  let filename = `${baseName}.txt`;
+  let filepath = `./hisaab/${filename}`;
+  let counter = 1;
+
+  // Check if file exists and find next available file name
+  while (fs.existsSync(filepath)) {
+    filename = `${baseName} (${counter}).txt`;
+    filepath = `./hisaab/${filename}`;
+    counter++;
+  }
+
+  fs.writeFile(filepath, req.body.content, function (err) {
+    if (err) return res.status(500).send(err);
+    res.redirect('/');
+  });
+});
